@@ -1,0 +1,16 @@
+.headerLogo{
+	padding:0px; margin: 0px;
+	height: 131px;
+	width: 402px;
+	background-image: url("overture.png");
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	color:#F3F8FB;
+}
+.productNameDisplay{
+	color:#9AB4BE;
+	padding-top: 60px;
+	padding-left: 30px;
+	font-size: smaller;
+	cursor:default
+}

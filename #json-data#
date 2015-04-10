@@ -1,0 +1,268 @@
+availableResource
+[{"key":2,"displayName":"Office_001_Cloud","computeNodeResources":[{"key":4,"displayName":"ensemble","availableRam":57735,"availableVirtualCPUCount":18,"availableDiskspace":966,"totalRam":64391,"totalVirtualCPUCount":24,"totalDiskspace":984},{"key":5,"displayName":"compute-172-16-1-201","availableRam":126467,"availableVirtualCPUCount":22,"availableDiskspace":980,"totalRam":129027,"totalVirtualCPUCount":24,"totalDiskspace":984},{"key":6,"displayName":"compute-172-16-1-205","availableRam":15424,"availableVirtualCPUCount":5,"availableDiskspace":49,"totalRam":15936,"totalVirtualCPUCount":5,"totalDiskspace":49},{"key":7,"displayName":"compute-172-16-1-206","availableRam":15424,"availableVirtualCPUCount":6,"availableDiskspace":49,"totalRam":15936,"totalVirtualCPUCount":6,"totalDiskspace":49},{"key":50,"displayName":"supermicro-215","availableRam":13314,"availableVirtualCPUCount":4,"availableDiskspace":42,"totalRam":15874,"totalVirtualCPUCount":6,"totalDiskspace":46}]}]
+
+
+[{"key":2,"displayName":"Office_001_Cloud","centralOfficeKey":2,"authorizationURL":"http://172.16.1.200:35357","login":"admin","password":"overture","cloudHostUser":"esoadmin","cloudHostUserPassword":"overture","cloudTenant":"admin","virtualIPRanges":[{"cidr":"10.10.10.0/16","blockSize":8,"cloudKey":2}],"cloudSwitches":[{"key":9,"displayName":"Cloud_Switch_001","portCollection":[{"key":71,"displayName":"CO_6500:5.25","ipAddressCollection":[],"ipAddressCollectionAsString":""},{"key":72,"displayName":"CO_6500:5.26","ipAddressCollection":[],"ipAddressCollectionAsString":""},{"key":657,"displayName":"supermicro-215:1.4","ipAddressCollection":[],"ipAddressCollectionAsString":""}],"centralOfficeKey":2,"cloudKey":2}],"cloudLocations":[{"key":3,"displayName":"Central_Office_001","centralOfficeKey":2,"isCentralOfficeLocation":true},{"key":52,"displayName":"supermicro-215","centralOfficeKey":2,"isCentralOfficeLocation":false}],"cloudPhysicalConnections":[{"key":8,"physicalDeviceKey":8,"physicalDeviceName":"CO_6500","physicalDeviceCloudAccessPortKey":69,"physicalDeviceCloudBackbonePortKey":70,"cloudSwitchKey":9,"cloudSwitchName":"Cloud_Switch_001","cloudKey":2,"physicalDeviceCloudAccessPortName":"5.25","physicalDeviceCloudBackbonePortName":"5.26"}]}]
+
+[
+    {
+        "key": 8,
+        "displayName": "CO_6500",
+        "portCollection": [
+            {
+                "key": 45,
+                "displayName": "5.1",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 46,
+                "displayName": "5.2",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 47,
+                "displayName": "5.3",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 48,
+                "displayName": "5.4",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 49,
+                "displayName": "5.5",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 50,
+                "displayName": "5.6",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 51,
+                "displayName": "5.7",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 52,
+                "displayName": "5.8",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 53,
+                "displayName": "5.9",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 54,
+                "displayName": "5.10",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 55,
+                "displayName": "5.11",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 56,
+                "displayName": "5.12",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 57,
+                "displayName": "5.13",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 58,
+                "displayName": "5.14",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 59,
+                "displayName": "5.15",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 60,
+                "displayName": "5.16",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 61,
+                "displayName": "5.17",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 62,
+                "displayName": "5.18",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 63,
+                "displayName": "5.19",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 64,
+                "displayName": "5.20",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 65,
+                "displayName": "5.21",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 66,
+                "displayName": "5.22",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 67,
+                "displayName": "5.23",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 68,
+                "displayName": "5.24",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 69,
+                "displayName": "5.25",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 70,
+                "displayName": "5.26",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            }
+        ],
+        "centralOfficeKey": 2,
+        "adminLogin": "security",
+        "adminPassword": "security",
+        "physicalDeviceTypeKey": 1,
+        "physicalDeviceTypeName": "OVERTURE_6504",
+        "location": {
+            "key": 3,
+            "displayName": "Central_Office_001",
+            "centralOfficeKey": 2,
+            "isCentralOfficeLocation": true
+        },
+        "readyStatus": "readyForUse",
+        "networkPhysicalConnection": {
+            "key": null,
+            "networkPhysicalDeviceKey": 280,
+            "networkPhysicalDeviceName": "supermicro-215",
+            "networkPhysicalDevicePortKey": 656,
+            "networkPhysicalDevicePortName": "1.4",
+            "networkFacingPortName": "5.12",
+            "networkFacingPortKey": 56,
+            "cpeTrunkVlanValue": null
+        },
+        "networkCloudConnection": {
+            "key": null,
+            "cloudKey": 2,
+            "cloudName": "Office_001_Cloud",
+            "networkFacingPortName": "5.25",
+            "networkFacingPortKey": 69
+        },
+        "coreProviderPort": {
+            "key": 8,
+            "coreProviderPortKey": 66,
+            "coreProviderPortName": "5.22",
+            "coreEntryVlanValue": 500,
+            "coreExitVlanValue": 500
+        },
+        "adminIPAddress": "10.11.11.10"
+    },
+    {
+        "key": 280,
+        "displayName": "supermicro-215",
+        "portCollection": [
+            {
+                "key": 653,
+                "displayName": "1.1",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 654,
+                "displayName": "1.2",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 655,
+                "displayName": "1.3",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            },
+            {
+                "key": 656,
+                "displayName": "1.4",
+                "ipAddressCollection": [],
+                "ipAddressCollectionAsString": ""
+            }
+        ],
+        "centralOfficeKey": 2,
+        "adminLogin": "security",
+        "adminPassword": "security",
+        "physicalDeviceTypeKey": 102,
+        "physicalDeviceTypeName": "OVERTURE_65VSE",
+        "location": {
+            "key": 52,
+            "displayName": "supermicro-215",
+            "centralOfficeKey": 2,
+            "isCentralOfficeLocation": false
+        },
+        "readyStatus": "readyForUse",
+        "networkPhysicalConnection": {
+            "key": null,
+            "networkPhysicalDeviceKey": 8,
+            "networkPhysicalDeviceName": "CO_6500",
+            "networkPhysicalDevicePortKey": 56,
+            "networkPhysicalDevicePortName": "5.12",
+            "networkFacingPortName": "1.4",
+            "networkFacingPortKey": 656,
+            "cpeTrunkVlanValue": 323
+        },
+        "networkCloudConnection": {
+            "key": null,
+            "cloudKey": 2,
+            "cloudName": "Office_001_Cloud",
+            "networkFacingPortName": "1.4",
+            "networkFacingPortKey": 656
+        },
+        "coreProviderPort": null,
+        "adminIPAddress": "172.16.1.215"
+    }
+]

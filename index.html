@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<head>
+    <title>Overture Virtual Service Web Portal</title>
+    <style type="text/css">
+        body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+        max-height: 100%;
+        font-family:Sans-serif;
+        line-height: 1.5em;
+        }
+
+        main {
+        position: fixed;
+        top: 200px; /* Set this to the height of the header */
+        bottom: 10px; /* Set this to the height of the footer */
+        left: 250px;
+        overflow: auto;
+        background: #fff;
+        }
+
+        #header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 85px;
+        overflow: hidden; /* Disables scrollbars on the header frame. To enable scrollbars, change "hidden" to "scroll" */
+        background: #BCCE98;
+        }
+
+        #footer {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 10px;
+        overflow: hidden; /* Disables scrollbars on the footer frame. To enable scrollbars, change "hidden" to "scroll" */
+        background: #BCCE98;
+        }
+
+        #PortView {
+        position: fixed;
+        top: 85px; /* Set this to the height of the header */
+        bottom: 200px; /* Set this to the height of the footer */
+        left: 250px;
+        overflow: auto;
+        background: #fff;
+        }
+        #ServiceSelectionView {
+        position: absolute;
+        top: 85px; /* Set this to the height of the header */
+        height: 220px; /* Set this to the height of the footer */
+        left: 0;
+        width: 250px;
+        overflow: auto; /* Scrollbars will appear on this frame only when there's enough content to require scrolling. To disable scrollbars, change to "hidden", or use "scroll" to enable permanent scrollbars */
+        background: #DAE9BC;
+        }
+
+        #DeviceSelectionView {
+        position: absolute;
+        top: 305px; /* Set this to the height of the header */
+        bottom: 10px; /* Set this to the height of the footer */
+        left: 0;
+        width: 250px;
+        overflow: auto; /* Scrollbars will appear on this frame only when there's enough content to require scrolling. To disable scrollbars, change to "hidden", or use "scroll" to enable permanent scrollbars */
+        background: #F7FDEB;
+        }
+
+        .innertube {
+        margin: 2px; /* Provides padding for the content */
+        }
+
+        p {
+        color: #555;
+        }
+
+        h3{
+        color: #FF0000
+        font-size:1.5em
+        }
+        nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        }
+
+        nav ul a {
+        color: darkgreen;
+        text-decoration: none;
+        }
+
+        /*IE6 fix*/
+        * html body{
+        padding: 50px 200px 50px 200px; /* Set the first value to the height of the header, the second value to the width of the right column, third value to the height of the footer, and last value to the width of the left column */
+        }
+
+        * html main{
+        height: 100%;
+        width: 100%;
+        }
+
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+</head>
+<body>
+<link href="css/overture.vsm.css" rel="stylesheet" media="screen">
+<header id="header">
+    <div class="innertube">
+        <div class="headerLogo">
+            <div class="productNameDisplay">Virtual Service Manager</div>
+        </div>
+    </div>
+</header>
+
+<nav id="PortView">
+    <table class="table table-striped">
+        <thread><tr>
+            <th>Name</th><th>State</th><th>PeerPort</th><th>IP</th><th>VLAN</th><th>BWP</th>
+        </tr></thread>
+        <tbody data-bind="foreach ServicePortCollection">
+        <tr>
+            <td data-bind="text: $data.pname"> </td>
+            <td data-bind="text:$data.state"></td>
+            <td><select data-bind="options: $root.connOptions, value: $data.connToType"></select> </td>
+            <td><input data-bind="value: $data.ip"/></td>
+            <td><input data-bind="value: $data.vlan"/></td>
+            <td><input data-bind="value: $data.bwp"/></td>
+        </tr>
+        </tbody>
+    </table>
+</nav>
+
+<main>
+        <div id="deviceView"
+             style="float: none;"
+             data-bind="with: selectedDevice">
+            <form>
+                <fieldset>
+                    <legend>Device Details</legend>
+                    <label>ID:
+                        <input type="text" data-bind="value: id"/>
+                    </label>
+                    <br/>
+                    <label>Description:
+                        <input type="text" data-bind="value: description"/>
+                    </label>
+                    <br/>
+                    <label>IP:
+                        <input type="text" data-bind="value: ip"/>
+                    </label>
+                    <br/>
+                    <label>Status:
+                        <input type="text" data-bind="value: status"/>
+                    </label>
+                </fieldset>
+            </form>
+        </div>
+</main>
+
+<nav id="DeviceSelectionView">
+    <div class="innertube">
+        <link rel="stylesheet" href="dist/themes/default/style.min.css" />
+        <h3>Devices</h3>
+
+        <div id="deviceListView"
+             style="float: left;">
+            <select id="deviceList"
+                    data-bind="options: deviceCollection,
+                               value: listViewSelectedItem,
+                               optionsText: 'statusAndDescription'">
+            </select>
+        </div>
+    </div>
+</nav>
+<nav id="ServiceSelectionView">
+    <div class="innertube">
+        <link rel="stylesheet" href="dist/themes/default/style.min.css" />
+        <h3>Services</h3>
+
+        <div id="ServiceListView" style="float: left;">
+            <select id="availableServices"
+                    data-bind="options: ServiceCollection,
+                               value: listViewSelectedService,
+                               optionsText: 'name'">
+
+            </select>
+        </div>
+    </div>
+    <div id="ServiceImageListView" style="float: left;">
+        <select id="availableServiceImages"
+                data-bind="visible: selectedService,
+                options: ImageCollection,
+                value: listViewSelectedImage">
+        </select>
+    </div>
+</nav>
+
+<footer id="footer">
+    <div class="innertube">
+        <p>Footer...</p>
+    </div>
+</footer>
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="dist/jstree.min.js"></script>
+<script src="js/knockout-3.3.0.js"></script>
+<script src="js/App.js"></script>
+<script src="js/Device.js"></script>
+<script src="js/DevicesViewModel.js"></script>
+<script>
+    $(window).bind("load", function() {
+        $.post("http://192.168.50.77:8080/osa/auth/login?1499222357",
+            {
+                j_username: "admin",
+                j_password: "admin"
+            },
+            function(data, status){
+                alert("Data: " + data + "\nStatus: " + status);
+            });
+
+    });
+    $(document).ready(function(){
+            $("#Refresh").button().click(function(){
+                var root = 'http://192.168.50.77:8080/osa/api';
+                $.get(root + '/availableResources/list').done(function(data){
+                console.log(data);
+                });
+            });
+
+            $("#Test").button().click(function(){
+                var testUrl = 'http://jsonplaceholder.typicode.com';
+                $.get(testUrl + '/posts/6', function(data){
+                        console.log(data);
+                });
+            });
+        });
+
+</script>
+<script>
+    var app = new myApp.App();
+    app.run();
+
+</script>
+</body>
+</html>
