@@ -394,7 +394,8 @@
                     var s = Object.create(myApp.Service).withInstanceCopy(
                                 vnfData.displayName,
                                 vnfData.portNames,
-                                vnfData.availableCustomOptimizations);
+                                vnfData.availableCustomOptimizations,
+                                vnfData.key);
 
                     if (!s) {
                         return;
@@ -2580,7 +2581,7 @@
             // non editable data
             self.state = {NOTUSED:"Available",CONNECTED:"Connected",CONFIGURED:"Configured",USED:"InService"};
 
-            self.connOptions = {INT:"ServicePort", OUT:"ExternalPort"};
+            self.connOptions = ko.observableArray(['ServicePort', 'ExternalPort']);
             self.type = {SRV:"ServicePort", PHY:"PhysicalPort"};
 
             // the device collection

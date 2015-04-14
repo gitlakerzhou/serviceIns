@@ -42,20 +42,17 @@
 
     Service = {
         withObserver: function() {
-                    // "id" property
                     this.name = ko.observable("");
-                    // "Description" property
                     this.imageOption = ko.observable([]);
-                    // "ip" property
                     this.ports = ko.observable([]);
 
                     return this;
             },
-        withInstanceCopy: function(name, ports, imageOption) {
+        withInstanceCopy: function(name, ports, imageOption, key) {
                     this.name = name;
                     this.imageOption = imageOption;
                     this.ports = ports;
-
+                    this.key = key;
                     return this;
                 }
     };

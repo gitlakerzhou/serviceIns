@@ -14,7 +14,7 @@
 
         main {
         position: fixed;
-        top: 200px; /* Set this to the height of the header */
+        top: 368px; /* Set this to the height of the header */
         bottom: 10px; /* Set this to the height of the footer */
         left: 250px;
         overflow: auto;
@@ -44,7 +44,7 @@
         #PortView {
         position: fixed;
         top: 85px; /* Set this to the height of the header */
-        bottom: 200px; /* Set this to the height of the footer */
+        height: 280px; /* Set this to the height of the footer */
         left: 250px;
         overflow: auto;
         background: #fff;
@@ -91,6 +91,9 @@
         color: darkgreen;
         text-decoration: none;
         }
+        devReady{
+            background:green;
+        }
 
         /*IE6 fix*/
         * html body{
@@ -98,8 +101,8 @@
         }
 
         * html main{
-        height: 100%;
-        width: 100%;
+        height: 80%;
+        width: 80%;
         }
 
     </style>
@@ -118,23 +121,23 @@
 </header>
 
 <nav id="PortView">
-    <table class="table table-striped">
+    <table id="SPortTable" class="display compact" cellpadding="0"  cellspacing="0" width="50%">
         <thread><tr>
-            <th>Name</th><th>State</th><th>PeerPort</th><th>IP</th><th>VLAN</th><th>BWP</th>
+            <th>Name</th><th>State</th><th>PeerPort</th><th>IP</th><th>VLAN</th><th>BWP</th><th>Actions</th>
         </tr></thread>
-        <tbody data-bind="foreach ServicePortCollection">
+        <tbody data-bind="foreach: ServicePortCollection">
         <tr>
-            <td data-bind="text: $data.pname"> </td>
-            <td data-bind="text:$data.state"></td>
-            <td><select data-bind="options: $root.connOptions, value: $data.connToType"></select> </td>
-            <td><input data-bind="value: $data.ip"/></td>
-            <td><input data-bind="value: $data.vlan"/></td>
-            <td><input data-bind="value: $data.bwp"/></td>
+            <td id="pn"  style = "width: 10%" data-bind="text: $data.pname"> </td>
+            <td id="ps" style = " width: 10%" data-bind="text:$data.state"></td>
+            <td id="pco" style = "width: 15%"><select class="SPINP" data-bind="options: $parent.connOptions, value: $data.connToType"></select> </td>
+            <td id="pip" style = "width: 15%"><input class="SPINP" maxlength="15" size="15" data-bind="value: $data.ip"/></td>
+            <td id="pvlan" style = "width: 15%"><input class="SPINPV" maxlength="7" size="7" data-bind="value: $data.vlan"/></td>
+            <td id="pbw" style = "width: 15%"><input class="SPINP" maxlength="10" size="10" data-bind="value: $data.bwp"/></td>
+            <td id="pAct"><button>Save</button><button>Reset</button></td>
         </tr>
         </tbody>
     </table>
 </nav>
-
 <main>
         <div id="deviceView"
              style="float: none;"
@@ -166,13 +169,14 @@
     <div class="innertube">
         <link rel="stylesheet" href="dist/themes/default/style.min.css" />
         <h3>Devices</h3>
-
         <div id="deviceListView"
-             style="float: left;">
+             style="float: left;" data-bind="css: { devReady: status == 'readyForUse' }">
             <select id="deviceList"
-                    data-bind="options: deviceCollection,
-                               value: listViewSelectedItem,
-                               optionsText: 'statusAndDescription'">
+                    data-bind="
+                        css: {devReady: $data.status == 'readyForUse'},
+                        options: deviceCollection,
+                        value: listViewSelectedItem,
+                        optionsText: 'description'">
             </select>
         </div>
     </div>
