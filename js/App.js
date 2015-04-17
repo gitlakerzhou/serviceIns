@@ -11,21 +11,38 @@ window.myApp = {};
         this.run = function(){
 
             // create an instance of our ViewModel
-            var dvm = new myApp.DevicesViewModel();
-            var svm = new myApp.ServicesViewModel();
-            var pvm = new myApp.PortsViewModel();
-            dvm.loadDevices();
-            svm.loadServices();
-            pvm.loadServicePorts();
-            // tell Knockout to process our bindings
-            ko.applyBindings(dvm, document.getElementById("deviceListView"));
-            ko.applyBindings(dvm, document.getElementById("deviceView"));
-            ko.applyBindings(svm, document.getElementById("ServiceSelectionView"));
-            ko.applyBindings(pvm, document.getElementById("PortView"));
+            var vm = new myApp.MasterVM();
         }
     }
 
     // make sure its public
     myApp.App = App;
 
-}(window.myApp));
+    var root = "/osa";
+    var token = '';
+    function apiLogin(){
+        $.post(root+'/auth/login?' + $.now(),
+            {
+                j_username: "admin",
+                j_password: "admin"
+            },
+            function(data, status){
+                token = data;
+            });
+    }
+    function apiGet(path, callback) {
+        $.ajax({
+                url: root + '/api' + path,
+                async: "false",
+		type: 'GET',
+                beforeSend : function(req) {
+                    req.setRequestHeader("auth-token", token);},
+                success: function(data) {
+                   callback.call(data);}
+                });
+        }
+    myApp.apiLogin = apiLogin;
+    myApp.apiGet = apiGet;
+    }
+
+(window.myApp));

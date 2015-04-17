@@ -15,8 +15,9 @@
         main {
         position: fixed;
         top: 368px; /* Set this to the height of the header */
-        bottom: 10px; /* Set this to the height of the footer */
+        bottom: 20px; /* Set this to the height of the footer */
         left: 250px;
+        width: 500px;
         overflow: auto;
         background: #fff;
         }
@@ -36,7 +37,7 @@
         left: 0;
         bottom: 0;
         width: 100%;
-        height: 10px;
+        height: 20px;
         overflow: hidden; /* Disables scrollbars on the footer frame. To enable scrollbars, change "hidden" to "scroll" */
         background: #BCCE98;
         }
@@ -62,7 +63,7 @@
         #DeviceSelectionView {
         position: absolute;
         top: 305px; /* Set this to the height of the header */
-        bottom: 10px; /* Set this to the height of the footer */
+        bottom: 20px; /* Set this to the height of the footer */
         left: 0;
         width: 250px;
         overflow: auto; /* Scrollbars will appear on this frame only when there's enough content to require scrolling. To disable scrollbars, change to "hidden", or use "scroll" to enable permanent scrollbars */
@@ -129,9 +130,9 @@
         <tr>
             <td id="pn"  style = "width: 10%" data-bind="text: $data.pname"> </td>
             <td id="ps" style = " width: 10%" data-bind="text:$data.state"></td>
-            <td id="pco" style = "width: 15%"><select class="SPINP" data-bind="options: $parent.connOptions, value: $data.connToType"></select> </td>
+            <td id="pco" style = "width: 17%"><select class="SPINP" data-bind="options: $parent.connOptions, value: $data.connToType"></select> </td>
             <td id="pip" style = "width: 15%"><input class="SPINP" maxlength="15" size="15" data-bind="value: $data.ip"/></td>
-            <td id="pvlan" style = "width: 15%"><input class="SPINPV" maxlength="7" size="7" data-bind="value: $data.vlan"/></td>
+            <td id="pvlan" style = "width: 10%"><input class="SPINPV" maxlength="7" size="7" data-bind="value: $data.vlan"/></td>
             <td id="pbw" style = "width: 15%"><input class="SPINP" maxlength="10" size="10" data-bind="value: $data.bwp"/></td>
             <td id="pAct"><button>Save</button><button>Reset</button></td>
         </tr>
@@ -141,7 +142,7 @@
 <main>
         <div id="deviceView"
              style="float: none;"
-             data-bind="with: selectedDevice">
+             data-bind="with:selectedDevice">
             <form>
                 <fieldset>
                     <legend>Device Details</legend>
@@ -163,9 +164,10 @@
                 </fieldset>
             </form>
         </div>
+    <button id="Refresh">refresh</button>
 </main>
 
-<nav id="DeviceSelectionView">
+<nav id="DeviceSelectionView" data-bind="with: $parents.DevicesViewModel">
     <div class="innertube">
         <link rel="stylesheet" href="dist/themes/default/style.min.css" />
         <h3>Devices</h3>
@@ -181,7 +183,7 @@
         </div>
     </div>
 </nav>
-<nav id="ServiceSelectionView">
+<nav id="ServiceSelectionView" >
     <div class="innertube">
         <link rel="stylesheet" href="dist/themes/default/style.min.css" />
         <h3>Services</h3>
@@ -204,6 +206,7 @@
     </div>
 </nav>
 
+
 <footer id="footer">
     <div class="innertube">
         <p>Footer...</p>
@@ -216,39 +219,13 @@
 <script src="js/App.js"></script>
 <script src="js/Device.js"></script>
 <script src="js/DevicesViewModel.js"></script>
+
 <script>
     $(window).bind("load", function() {
-        $.post("http://192.168.50.77:8080/osa/auth/login?1499222357",
-            {
-                j_username: "admin",
-                j_password: "admin"
-            },
-            function(data, status){
-                alert("Data: " + data + "\nStatus: " + status);
-            });
-
+        myApp.apiLogin();
+        var app = new myApp.App();
+        app.run();
     });
-    $(document).ready(function(){
-            $("#Refresh").button().click(function(){
-                var root = 'http://192.168.50.77:8080/osa/api';
-                $.get(root + '/availableResources/list').done(function(data){
-                console.log(data);
-                });
-            });
-
-            $("#Test").button().click(function(){
-                var testUrl = 'http://jsonplaceholder.typicode.com';
-                $.get(testUrl + '/posts/6', function(data){
-                        console.log(data);
-                });
-            });
-        });
-
-</script>
-<script>
-    var app = new myApp.App();
-    app.run();
-
 </script>
 </body>
 </html>
