@@ -31,16 +31,13 @@ window.myApp = {};
             });
     }
     function apiGet(path, callback) {
-        $.ajax({
-                url: root + '/api' + path,
-                async: "false",
-		type: 'GET',
-                beforeSend : function(req) {
-                    req.setRequestHeader("auth-token", token);},
-                success: function(data) {
-                   callback.call(data);}
-                });
-        }
+        $.get(root + '/api' + path,
+            function(data) {
+                   callback.call(data);
+        }).fail( function() {
+	    console.log("API call failed: "+ path);
+        });
+    }
     myApp.apiLogin = apiLogin;
     myApp.apiGet = apiGet;
     }

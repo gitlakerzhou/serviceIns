@@ -9,7 +9,6 @@
 
         // the device that we want to view/edit
         self.selectedDevice = ko.observable();
-
         // the device collection
         self.deviceCollection = ko.observableArray([]);
 
@@ -20,9 +19,72 @@
         self.listViewSelectedItem.subscribe(function (device) {
             if (device) {
                 self.selectedDevice(device);
+		self.resourceDashBoard(device);
             }
         });
+	self.drawResDashBoardPercentage = function(context, x, y, r, name, percentage) {
+            var s = 0;
+            var grad = context.createRadialGradient(x, y, r * 0.95, x, y, r * 1.05);
+            grad.addColorStop(0, 'red');
+            grad.addColorStop(0.5, 'white');
+            grad.addColorStop(1, 'red');
+            var degrees = percentage * 360.0;
+            var radians = degrees * (Math.PI / 180);
 
+            context.beginPath();
+            context.arc(x, y, r, s, radians, false);
+            context.strokeStyle = grad;
+            context.lineWidth = r * 0.4;
+            context.stroke();
+
+            s = radians;
+            grad = context.createRadialGradient(x, y, r * 0.95, x, y, r * 1.05);
+            grad.addColorStop(0, 'green');
+            grad.addColorStop(0.5, 'white');
+            grad.addColorStop(1, 'green');
+            degree = (1 - percentage) * 360.0;
+            radians = 360 * (Math.PI / 180);
+
+            context.beginPath();
+            context.arc(x, y, r, s, radians, false);
+            context.strokeStyle = grad;
+            context.stroke();
+
+            //TODO:take the font and size to CSS
+            context.font = "10px Comic Sans MS";
+            context.fillStyle = "blue";
+            context.textAlign = "center";
+            context.fillText(percentage * 100 + '%', x, y+5);
+            context.font = "12px Comic Sans MS";
+            context.fillText(name, x, y + r + 18);
+        };
+
+        self.resourceDashBoard = function (sDevice) {
+             var canvas = document.getElementById('DevRes');
+             var context = canvas.getContext('2d');
+
+             var r = canvas.width/6-10;
+             var y = 15;
+	     context.font = "12px Comic Sans MS";
+            context.fillStyle = "blue";
+            context.textAlign = "left";
+            context.fillText('Status:', 5, y);
+		context.fillText(sDevice.status, 65, y);
+            context.fillText('Admin IP:', 5, y+30);
+                context.fillText(sDevice.ip, 65, y+30);
+		y = canvas.width/6 + 60;
+
+             self.drawResDashBoardPercentage(context,
+                 canvas.width/6+3, y, r, 'CPU',
+                 sDevice.cpuUsage);
+             self.drawResDashBoardPercentage(context,
+                 canvas.width/2, y, r, 'RAM',
+                 sDevice.ramUsage);
+             self.drawResDashBoardPercentage(context,
+                 canvas.width * 5/6-3, y, r, 'DISK',
+                 sDevice.diskUsage);
+
+        };
 	self.populateDevices = function (devices) {
 	    for (var idx in devices) {
                 // create a new instance of a Device
