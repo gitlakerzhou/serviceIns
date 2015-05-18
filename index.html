@@ -16,8 +16,8 @@
         position: fixed;
         top: 368px; /* Set this to the height of the header */
         bottom: 20px; /* Set this to the height of the footer */
-        left: 250px;
-        width: 500px;
+        left: 600px;
+        width: 247px;
         overflow: auto;
         background: #fff;
         }
@@ -45,10 +45,30 @@
         #PortView {
         position: fixed;
         top: 85px; /* Set this to the height of the header */
-        height: 280px; /* Set this to the height of the footer */
+        height: 220px; /* Set this to the height of the footer */
         left: 250px;
-        overflow: auto;
-        background: #fff;
+        overflow-y: auto;
+	overflow-x: hidden;
+        background: #DAE9BC;
+        }
+        #ServiceSelectionView {
+        position: absolute;
+        top: 85px; /* Set this to the height of the header */
+        height: 220px; /* Set this to the height of the footer */
+        left: 0;
+        width: 250px;
+        overflow: auto; /* Scrollbars will appear on this frame only when there's enough content to require scrolling. To disable scrollbars, change to "hidden", or use "scroll" to enable permanent scrollbars */
+        background: #DAE9BC;
+        }
+        #PhysicalPortView {
+        position: fixed;
+        top: 318px; /* Set this to the height of the header */
+        bottom: 20px; /* Set this to the height of the footer */
+        left: 250px;
+        width: 347px;
+        overflow-y: auto;
+	overflow-x: auto;
+        background: #F7FDEB;
         }
         #ServiceSelectionView {
         position: absolute;
@@ -139,6 +159,34 @@
         </tbody>
     </table>
 </nav>
+
+<nav id="PhysicalPortView">
+	    <table id="PPortTable" class="display compact" cellpadding="0"  cellspacing="0" width="50%">
+		<thread><tr>
+		    <th>Name</th><th>State</th><th>Type</th><th>SiteName</th><th>SiteVlan</th><th>BWP</th><th>Actions</th>
+		</tr></thread>
+	        <tbody data-bind="foreach: PhysicalPortCollection">
+	        <tr>
+	            <td id="pn"  style = "width: 10%" data-bind="text: pname" rowspan="2"> </td>
+	            <td id="ps" style = " width: 10%" data-bind="text:state" rowspan="2"></td>
+	            <td id="pco" style = "width: 17%" rowspan="2"><select class="SPINP" data-bind="options:$parent.connOptions, value:connToType"></select> </td>
+	            <td id="psn" style = "width: 15%" rowspan="2"><input class="SPINP" maxlength="15" size="15" data-bind="value: siteName"/></td>
+	            <td id="pov" style = "width: 10%"><input class="SPINPV" maxlength="7" size="7" data-bind="value: siteInOp"/></td>
+	            <td id="pbw" style = "width: 15%" class="SPINP" maxlength="10" size="10" data-bind="text:siteInBwp"></td>
+	            <td id="pAct" rowspan="2"><button>Create Site, Delete Site</button></td>
+                 </tr>
+                 <tr>
+	            <td id="pov" style = "width: 10%"><input class="SPINPV" maxlength="7" size="7" data-bind="value: siteOutOp"/></td>
+	            <td id="pbw" style = "width: 15%" class="SPINP" maxlength="10" size="10" data-bind="text:siteOutBwp"></td>
+	        </tr>
+	        </tbody>
+	    </table>
+
+        </div>
+
+</nav>
+
+
 <main>
         <div id="deviceView"
              style="float: none;"
@@ -147,11 +195,11 @@
                 <fieldset>
                     <legend>Device Details</legend>
                     <label>ID:
-                        <input type="text" data-bind="value: id"/>
+                        <data-bind="text: id"/>
                     </label>
                     <br/>
                     <label>Description:
-                        <input type="text" data-bind="value: description"/>
+                        <data-bind="text: description"/>
                     </label>
                     <br/>
                     <label>IP:
@@ -163,7 +211,6 @@
                     </label>
                 </fieldset>
             </form>
-        </div>
     <button id="Refresh">refresh</button>
 </main>
 
@@ -181,7 +228,7 @@
                         optionsText: 'description'">
             </select>
         </div>
-        <div id="deviceResourceView" data-bind="with:selectedDeviceResource">
+        <div id="deviceResourceView" data-bind="with:selectedDevice">
             <canvas id="DevRes" width="245" height="300" style="border:1px solid #000000;"></canvas>
         </div>
     </div>

@@ -1,39 +1,16 @@
 (function (myApp) {
     Device = {
-        withObserver: function() {
-                // "id" property
-                this.id = ko.observable("");
-                // "Description" property
-                this.description = ko.observable("");
-                // "ip" property
-                this.ip = ko.observable(0);
-                // "status" property
-                this.status = ko.observable(0);
-                this.location = ko.observable("");
-                this.diskUsage = ko.observable(0);
-                this.cpuUsage = ko.observable(0);
-                this.ramUsage = ko.observable(0);
-
-                // Computed Observables
-
-                // simply combines the Sku and Description properties
-                this.statusAndDescription = ko.computed(function () {
-                    var s = self.status() || "";
-                    var description = self.description() || "";
-
-                    return s + ": " + description;
-                });
-                return this;
-        },
-        withInstanceCopy: function(id, des, ip, status, loc, du, cu, ru) {
+        withInstanceCopy: function(id, des, ip, status, loc, du, cu, ru, ports, COKey) {
             this.id = id;
             this.description = des;
-            this.ip = ip;
-            this.status = status;
+            this.ip = ko.observable(ip);
+            this.ports = ports;
+            this.status = ko.observable(status);
             this.location = loc;
-            this.diskUsage = du;
-            this.cpuUsage = cu;
-            this.ramUsage = ru;
+            this.diskUsage =  ko.observable(du);
+            this.cpuUsage =  ko.observable(cu);
+            this.ramUsage =  ko.observable(ru);
+	    this.COKey = COKey;
             this.statusAndDescription = status + ": " + des;
             return this;
         }
@@ -41,13 +18,6 @@
     myApp.Device = Device;
 
     Service = {
-        withObserver: function() {
-                    this.name = ko.observable("");
-                    this.imageOption = ko.observable([]);
-                    this.ports = ko.observable([]);
-
-                    return this;
-            },
         withInstanceCopy: function(name, ports, imageOption, key) {
                     this.name = name;
                     this.imageOption = imageOption;
@@ -65,6 +35,7 @@
         withInstanceCopy: function (key, name, owner, ownerType) {
             var self = this;
             self.key = key;
+            self.deviceKey = 0;
             self.pname = name;
             self.owner = owner;
             self.ownerType = ownerType;
@@ -75,7 +46,18 @@
             var initVLAN = 100; //TODO: read the vlan
             self.vlan = ko.observable(initVLAN);
             self.peerPorts = ko.observable([]);
-            self.bwp = ko.observable("");
+            self.siteName = ko.observable("");
+            self.siteTenantName = ko.observable("");
+            self.siteInOp = ko.observable("");
+            self.siteInTag = ko.observable("");
+            self.siteInBwp = ko.observable("");
+            self.siteInValue = ko.observable("");
+            self.siteOutOp = ko.observable("");
+            self.siteOutTag = ko.observable("");
+            self.siteOutBwp = ko.observable("");
+            self.siteOutValue = ko.observable("");
+            self.siteVlan = ko.observable("");
+
             self.state = ko.computed(function() {
               return ("available");
             });
