@@ -12,14 +12,14 @@
         line-height: 1.5em;
         }
 
-        main {
+        #ServiceOrder {
         position: fixed;
-        top: 368px; /* Set this to the height of the header */
+        top: 85px; /* Set this to the height of the header */
         bottom: 20px; /* Set this to the height of the footer */
-        left: 600px;
+        left: 750px;
         width: 247px;
         overflow: auto;
-        background: #fff;
+        background: #BCCE99;
         }
 
         #header {
@@ -45,16 +45,17 @@
         #PortView {
         position: fixed;
         top: 85px; /* Set this to the height of the header */
-        height: 220px; /* Set this to the height of the footer */
+        height: 260px; /* Set this to the height of the footer */
         left: 250px;
+	width:500px;
         overflow-y: auto;
-	overflow-x: hidden;
+	overflow-x: auto;
         background: #DAE9BC;
         }
         #ServiceSelectionView {
         position: absolute;
         top: 85px; /* Set this to the height of the header */
-        height: 220px; /* Set this to the height of the footer */
+        height: 260px; /* Set this to the height of the footer */
         left: 0;
         width: 250px;
         overflow: auto; /* Scrollbars will appear on this frame only when there's enough content to require scrolling. To disable scrollbars, change to "hidden", or use "scroll" to enable permanent scrollbars */
@@ -62,18 +63,32 @@
         }
         #PhysicalPortView {
         position: fixed;
-        top: 318px; /* Set this to the height of the header */
+        top: 358px; /* Set this to the height of the header */
         bottom: 20px; /* Set this to the height of the footer */
         left: 250px;
-        width: 347px;
+        width: 500px;
         overflow-y: auto;
+        overflow: auto; /* Scrollbars will appear on this frame only when there's enough content to require scrolling. To disable scrollbars, change to "hidden", or use "scroll" to enable permanent scrollbars */
+        background: #F7FDEB;
+        }
+
+        .innertube {
+        margin: 2px; /* Provides padding for the content */
+        }
+
+        p {
+        color: #555;
+        }
+
+        h3{
+        color: #F
 	overflow-x: auto;
         background: #F7FDEB;
         }
         #ServiceSelectionView {
         position: absolute;
         top: 85px; /* Set this to the height of the header */
-        height: 220px; /* Set this to the height of the footer */
+        height: 260px; /* Set this to the height of the footer */
         left: 0;
         width: 250px;
         overflow: auto; /* Scrollbars will appear on this frame only when there's enough content to require scrolling. To disable scrollbars, change to "hidden", or use "scroll" to enable permanent scrollbars */
@@ -82,7 +97,7 @@
 
         #DeviceSelectionView {
         position: absolute;
-        top: 305px; /* Set this to the height of the header */
+        top: 345px; /* Set this to the height of the header */
         bottom: 20px; /* Set this to the height of the footer */
         left: 0;
         width: 250px;
@@ -118,7 +133,7 @@
 
         /*IE6 fix*/
         * html body{
-        padding: 50px 200px 50px 200px; /* Set the first value to the height of the header, the second value to the width of the right column, third value to the height of the footer, and last value to the width of the left column */
+        padding: 50px 200px 0px 200px; /* Set the first value to the height of the header, the second value to the width of the right column, third value to the height of the footer, and last value to the width of the left column */
         }
 
         * html main{
@@ -133,6 +148,7 @@
 </head>
 <body>
 <link href="css/overture.vsm.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/sunny/jquery-ui.css">
 <header id="header">
     <div class="innertube">
         <div class="headerLogo">
@@ -144,17 +160,15 @@
 <nav id="PortView">
     <table id="SPortTable" class="display compact" cellpadding="0"  cellspacing="0" width="50%">
         <thread><tr>
-            <th>Name</th><th>State</th><th>PeerPort</th><th>IP</th><th>VLAN</th><th>BWP</th><th>Actions</th>
+            <th>VNF</th><th>Port</th><th>Summary</th><th>Actions</th>
         </tr></thread>
         <tbody data-bind="foreach: ServicePortCollection">
         <tr>
-            <td id="pn"  style = "width: 10%" data-bind="text: $data.pname"> </td>
-            <td id="ps" style = " width: 10%" data-bind="text:$data.state"></td>
-            <td id="pco" style = "width: 17%"><select class="SPINP" data-bind="options: $parent.connOptions, value: $data.connToType"></select> </td>
-            <td id="pip" style = "width: 15%"><input class="SPINP" maxlength="15" size="15" data-bind="value: $data.ip"/></td>
-            <td id="pvlan" style = "width: 10%"><input class="SPINPV" maxlength="7" size="7" data-bind="value: $data.vlan"/></td>
-            <td id="pbw" style = "width: 15%"><input class="SPINP" maxlength="10" size="10" data-bind="value: $data.bwp"/></td>
-            <td id="pAct"><button>Save</button><button>Reset</button></td>
+            <td id="pn"  style = "width: 10%" data-bind="text: $data.owner.name"> </td>
+            <td id="ps" style = " width: 10%" data-bind="text:$data.pname"></td>
+            <td id="pi" style = " width: 40%" data-bind="text:$data.info"></td>
+            <td id="pAct"><a href data-bind="click: function() { $parent.addLink($data) }">Add Link</a>
+	  		<button>Del Link</button></td>
         </tr>
         </tbody>
     </table>
@@ -163,29 +177,32 @@
 <nav id="PhysicalPortView">
 	    <table id="PPortTable" class="display compact" cellpadding="0"  cellspacing="0" width="50%">
 		<thread><tr>
-		    <th>Name</th><th>State</th><th>Type</th><th>SiteName</th><th>SiteVlan</th><th>BWP</th><th>Actions</th>
+		    <th>Name</th><th>Summary</th><th>Actions</th>
 		</tr></thread>
-	        <tbody data-bind="foreach: PhysicalPortCollection">
+	        <tbody data-bind="foreach: PhysicalPortCollection ">
 	        <tr>
-	            <td id="pn"  style = "width: 10%" data-bind="text: pname" rowspan="2"> </td>
-	            <td id="ps" style = " width: 10%" data-bind="text:state" rowspan="2"></td>
-	            <td id="pco" style = "width: 17%" rowspan="2"><select class="SPINP" data-bind="options:$parent.connOptions, value:connToType"></select> </td>
-	            <td id="psn" style = "width: 15%" rowspan="2"><input class="SPINP" maxlength="15" size="15" data-bind="value: siteName"/></td>
-	            <td id="pov" style = "width: 10%"><input class="SPINPV" maxlength="7" size="7" data-bind="value: siteInOp"/></td>
-	            <td id="pbw" style = "width: 15%" class="SPINP" maxlength="10" size="10" data-bind="text:siteInBwp"></td>
-	            <td id="pAct" rowspan="2"><button>Create Site, Delete Site</button></td>
+	            <td id="pn"  style = "width: 10%" data-bind="text: pname" > </td>
+	            <td id="psn" style = "width: 15%" data-bind="text: info"></td>
+	            <td id="pAct" ><button>Create Site, Delete Site</button></td>
                  </tr>
-                 <tr>
-	            <td id="pov" style = "width: 10%"><input class="SPINPV" maxlength="7" size="7" data-bind="value: siteOutOp"/></td>
-	            <td id="pbw" style = "width: 15%" class="SPINP" maxlength="10" size="10" data-bind="text:siteOutBwp"></td>
-	        </tr>
-	        </tbody>
+                </tbody>
 	    </table>
-
         </div>
 
 </nav>
 
+<nav id="NewLink" title="Create a link">
+    <div >
+        <p data-bind="text: selectedPort().pname">  hello</p>
+        <label for="name">Name: </label>
+	<input class="defaultText ui-widget-content ui-corner-all" title="peer name" id="name" data-bind="value: selectedPort().peerDevName">
+	<label for="name">Peer Type:</label>
+	<select data-bind="options: connOptions, value: selectedPort().connToType"></select>
+	<label for="name">Peer port:</label>
+	<select data-bind="options: copyAPs, optionsText: 'pname', value: selectedPort().peerPort, optionsCaption: 'Choose...'"></select>
+
+    </div>
+</nav>
 
 <main>
         <div id="deviceView"
@@ -236,8 +253,7 @@
 <nav id="ServiceSelectionView" >
     <div class="innertube">
         <link rel="stylesheet" href="dist/themes/default/style.min.css" />
-        <h3>Services</h3>
-
+        <h3>VNF Catalog</h3>
         <div id="ServiceListView" style="float: left;">
             <select id="availableServices"
                     data-bind="options: ServiceCollection,
@@ -254,6 +270,45 @@
                 value: listViewSelectedImage">
         </select>
     </div>
+    <div id="InsName" style="float: left;">
+       <label> Instance Name  <input type="text" id="serviceInsName"
+                data-bind="visible: selectedService, 
+                value: vnfInsName">
+        </label>
+    </div>
+<button id="vnfInstantiate1" data-bind="click: addVnfToList"> create VNF Instance </button>	
+<button id="vnfInstantiate2" data-bind="click: removeVnfFromList"> delete VNF Instance </button>
+</nav>
+<nav id="ServiceOrder"><h3>Service Order</h3>
+    <div id="ServiceName" style="float: left;">
+       <label> Name <input type="text" id="serviceOrderName"
+                data-bind="visible: ServiceOrder,
+                value: serviceName">
+        </label>
+    </div>
+    <div id="ServicVNFList" style="float: left;">
+        <label> VNF Instance: 
+	    <select id="ServiceVnfInstances"
+                    data-bind="options: vnfInsCollection,
+                               value: listViewServiceVnfInstances,
+                               optionsText: 'name'">
+
+            </select>
+	</label>
+
+    </div>
+    <div id="ServicLinkList" style="float: left;">
+        <label> links: 
+	    <select id="ServiceLinks"
+                    data-bind="options: serviceLinks,
+                               value: listViewLinks,
+                               optionsText: 'info'">
+
+            </select>
+	</label>
+
+    </div>
+<button id="SOSubmit" data-bind="click: submitServiceOrder"> Submit Service Order </button>
 </nav>
 
 
@@ -269,6 +324,9 @@
 <script src="js/App.js"></script>
 <script src="js/Device.js"></script>
 <script src="js/DevicesViewModel.js"></script>
+<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>
+<script src="js/knockout-jqueryui.js"></script>
+
 
 <script>
     $(window).bind("load", function() {

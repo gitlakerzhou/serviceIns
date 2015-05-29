@@ -29,7 +29,15 @@ window.myApp = {};
             function(data, status){
                 token = data;
             });
-    }
+    };
+    function apiPost(path, input, callback){
+        $.post(root + '/api' + path, input,
+            function(data, status){
+                callback.call(data);
+            }).fail( function() {
+	    alert("API call failed: "+ path);
+        });
+    };
     function apiGet(path, callback) {
         $.get(root + '/api' + path,
             function(data) {
@@ -37,9 +45,34 @@ window.myApp = {};
         }).fail( function() {
 	    console.log("API call failed: "+ path);
         });
-    }
+    };
     myApp.apiLogin = apiLogin;
+    myApp.apiPost = apiPost;
     myApp.apiGet = apiGet;
     }
 
 (window.myApp));
+
+
+$(document).ready(function()
+{
+    $(".defaultText").focus(function(srcc)
+    {
+        if ($(this).val() == $(this)[0].title)
+        {
+            $(this).removeClass("defaultTextActive");
+            $(this).val("");
+        }
+    });
+    
+    $(".defaultText").blur(function()
+    {
+        if ($(this).val() == "")
+        {
+            $(this).addClass("defaultTextActive");
+            $(this).val($(this)[0].title);
+        }
+    });
+    
+    $(".defaultText").blur();        
+});

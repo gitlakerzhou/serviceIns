@@ -31,7 +31,7 @@
 
 table{
     border: 0px solid;
-    width: 650px;
+    width: 680px;
     padding: 0;
 }
 th{
@@ -41,7 +41,25 @@ td {
     border: 0px solid black;
     overflow: hidden;
     padding: 0;
-    font-size: smaller;
     height: 20px;
     width: 100%;
 }
+.ui-widget-header,.ui-state-default, ui-button{
+            background:#b9cd6d;
+            border: 2px solid #b9cd6d;
+            color: #FFFFFF;
+            font-weight: bold;
+         }
+         .invalid { color: red; }
+         textarea {
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 10px;
+         }
+#NewLink { 
+	background:#b9cd6d;
+	font-size: .85em; 
+	color: #888; 
+}
+    .defaultText { width: 300px; }
+    .defaultTextActive { color: #a1a1a1; font-style: italic; }
