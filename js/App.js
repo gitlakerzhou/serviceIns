@@ -31,12 +31,26 @@ window.myApp = {};
             });
     };
     function apiPost(path, input, callback){
-        $.post(root + '/api' + path, input,
+        /*$.post(root + '/api' + path, input,
             function(data, status){
                 callback.call(data);
             }).fail( function() {
 	    alert("API call failed: "+ path);
-        });
+        });*/
+	$.ajax({
+	  type: "POST",
+	  url: root + '/api' + path,
+	  data: input,
+	  success: function(data, status){
+                callback.call(data);
+            },
+	  contentType: 'application/json', 
+	  processData: false,
+	  beforeSend: function(x, s) {
+                //osa.ajax.showLoadingBar();
+                s.data = (s.data) ? JSON.stringify(s.data) : null;
+            }
+	});
     };
     function apiGet(path, callback) {
         $.get(root + '/api' + path,

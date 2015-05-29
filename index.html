@@ -167,8 +167,8 @@
             <td id="pn"  style = "width: 10%" data-bind="text: $data.owner.name"> </td>
             <td id="ps" style = " width: 10%" data-bind="text:$data.pname"></td>
             <td id="pi" style = " width: 40%" data-bind="text:$data.info"></td>
-            <td id="pAct"><a href data-bind="click: function() { $parent.addLink($data) }">Add Link</a>
-	  		<button>Del Link</button></td>
+            <td><button data-bind="click: function() { $parent.addLink($data) }">Add Link</button>
+	    <button data-bind="click: function() { $parent.delLink($data) }">Del Link</button></td>
         </tr>
         </tbody>
     </table>
@@ -194,13 +194,16 @@
 <nav id="NewLink" title="Create a link">
     <div >
         <p data-bind="text: selectedPort().pname">  hello</p>
-        <label for="name">Name: </label>
-	<input class="defaultText ui-widget-content ui-corner-all" title="peer name" id="name" data-bind="value: selectedPort().peerDevName">
 	<label for="name">Peer Type:</label>
 	<select data-bind="options: connOptions, value: selectedPort().connToType"></select>
 	<label for="name">Peer port:</label>
 	<select data-bind="options: copyAPs, optionsText: 'pname', value: selectedPort().peerPort, optionsCaption: 'Choose...'"></select>
 
+    </div>
+</nav>
+<nav id="DelLink" title="Delete a link">
+    <div >
+        <p> Delete the link? </p>
     </div>
 </nav>
 
@@ -319,7 +322,6 @@
 </footer>
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="dist/jstree.min.js"></script>
 <script src="js/knockout-3.3.0.js"></script>
 <script src="js/App.js"></script>
 <script src="js/Device.js"></script>

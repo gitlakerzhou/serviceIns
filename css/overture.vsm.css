@@ -56,6 +56,11 @@ td {
             width: 100%;
             margin-bottom: 10px;
          }
+#DelLink { 
+	background:#b9cd6d;
+	font-size: .85em; 
+	color: #888; 
+}
 #NewLink { 
 	background:#b9cd6d;
 	font-size: .85em; 

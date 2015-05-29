@@ -4,6 +4,7 @@
     this.serviceSelectionNotice = new ko.subscribable();
     this.deviceSelectionNotice = new ko.subscribable();
     this.newLinkNotice = new ko.subscribable();
+    this.delLinkNotice = new ko.subscribable();
     this.availablePorts = [];
     this.availableSrvPorts = ko.observableArray([]);
     this.availableSites = ko.observableArray([]);
@@ -395,6 +396,9 @@ var json2xml = function(o, tab) {
 	    newLinkNotice.subscribe(function(link) {
                 self.serviceLinks.push(link);
             }, self, "NewLink");
+	    delLinkNotice.subscribe(function(link) {
+                self.serviceLinks.remove(link);
+            }, self, "DelLink");
 
 	    self.updataVnfInsName = function() {
 		var found = false;
@@ -729,7 +733,6 @@ var json2xml = function(o, tab) {
             }, self, "SelectedService");
 
 	    self.selectedPort = ko.observable({pname:"name"}); //ko.observable(self.ServicePortCollection.indexOf(0));
-	    self.isOpen = ko.observable(false);
 
 	    self.listViewPeerType = ko.observable(null);
 	    self.listViewPeerType.subscribe(function(type) {
@@ -789,7 +792,6 @@ var json2xml = function(o, tab) {
 	    self.addLink =  function(port) {
 		//console.log(port);
 		self.selectedPort(port);
-		self.isOpen (true);
 		self.copyAPs (availablePorts);
 		console.log(self.copyAPs());
 		console.log(availablePorts);
@@ -819,8 +821,39 @@ var json2xml = function(o, tab) {
 	                }
 	            }
 		});
+	    };
+	    self.delLink =  function(port) {
+		//console.log(port);
+		self.selectedPort(port);
+		self.copyAPs (availablePorts);
 
-	    }
+		$( "#DelLink" ).dialog({
+	            resizable: true,
+		    width:400,
+	            height:500,
+	            buttons: {
+	                "Delete Link": function() {
+			    //self.linkCollection.push(port);
+			    delLinkNotice.notifySubscribers(port, "DelLink");
+			    port.connToType = "NoPeer";
+			    port.peerPort = ko.observable();
+			    self.ServicePortCollection.remove(function(pt) {return pt.key == port.key});
+			    port.info = port.calculate();
+			    self.ServicePortCollection.push(port);
+			    portsUpdate(port, true);
+
+			    self.ServicePortCollection.sort(function(left, right) {
+				return left.key == right.key ? 0 : (left.key < right.key ? -1 : 1)
+			    });
+			    $(this).dialog( "close" );
+	                },
+	                Cancel: function() {
+	                    $(this).dialog( "close" );
+	                }
+	            }
+		});
+
+	    };
             return this;
         };
     function convertToObservable(list) 
@@ -995,6 +1028,7 @@ var json2xml = function(o, tab) {
         ko.applyBindings(self.ServicesViewModel, document.getElementById("ServiceSelectionView"));
         ko.applyBindings(self.ServicePortsViewModel, document.getElementById("PortView"));
 	ko.applyBindings(self.ServicePortsViewModel, document.getElementById("NewLink"));
+	ko.applyBindings(self.ServicePortsViewModel, document.getElementById("DelLink"));
 	ko.applyBindings(self.PhysicalPortsViewModel, document.getElementById("PhysicalPortView"));
 	ko.applyBindings(self.ServicesViewModel, document.getElementById("ServiceOrder"));
         return this;

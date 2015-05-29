@@ -179,8 +179,8 @@
 		    case 'NoPeer':
 			s += "Not connected"
 		    break;
-		    case 'PhyConn':
-			s += "Connected to "+self.peerDevName+" at "+self.peerDevPortName;
+		    case 'PhyConn': // connect to a port on another physical device
+			s += "Connected to " + self.peerDevPortName + " on " + self.peerDevName;
 		    break;
 		    case 'Site':
 			s += self.siteName() + "\n" + " IN: " + self.siteInOp() + '/' + self.siteInTag() + '/' + self.InBwp +"\n";
@@ -190,6 +190,9 @@
 		    break;
 		    case 'CoreProviderP':
 			s += "Core Provider Entry VLAN: " + self.coreEntryVlan + "; Exit VLAN: " + self.coreExitVlan;
+		    break;
+		    case 'SrvPort':
+			s += "Connected to Service Port";
 		    break;
 		    }
 		}
@@ -201,24 +204,21 @@
 	    self.linkSummary = function() {
 		var s = '';
 		//console.log(self.ownerType + "/" + self.connToType);
-		if (self.peerDevName && self.connToType) {
-		    s += self.pname + ' --> ' + self.peerDevName + '(' + self.connToType + ')';
+		if (self.peerPort() && self.connToType) {
+		    s += self.pname + ' --> ' ;
 		    //physical port
 		    switch (self.connToType) {
 		    case 'NoPeer':
-			s += "Not connected"
+			s += "Not connected, bug!"
 		    break;
-		    case 'PhyConn':
-			s += "Connected to "+self.peerDevName+" at "+self.peerDevPortName;
+		    case 'PhyConn': // service port connected to a physical port
+			s += self.peerPort().pname + " on " + self.peerPort().owner.description;
 		    break;
 		    case 'Site':
-			s += self.siteName() + "\n" + " IN: " + self.siteInOp() + '/' + self.siteInTag() + '/' + self.InBwp +"\n";
+			s += self.peerPort().siteName() + " on " + self.peerPort().owner.description;
 		    break;
-		    case 'CloudConn':
-			s += "Connected to "+self.cloudName;
-		    break;
-		    case 'CoreProviderP':
-			s += "Core Provider Entry VLAN: " + self.coreEntryVlan + "; Exit VLAN: " + self.coreExitVlan;
+		    case 'SrvPort':
+			s += self.peerPort().pname + " on " + self.peerPort().owner.name;
 		    break;
 		    }
 		}
