@@ -1,5 +1,8 @@
 // Define the namespace
-window.myApp = {};
+window.myApp = {
+    'username':  '',
+    'password': '',
+    'isLogin': false};
 
 (function(myApp){
 
@@ -9,7 +12,6 @@ window.myApp = {};
         // core logic to run when all
         // dependencies are loaded
         this.run = function(){
-
             // create an instance of our ViewModel
             var vm = new myApp.MasterVM();
         }
@@ -20,16 +22,58 @@ window.myApp = {};
 
     var root = "/osa";
     var token = '';
-    function apiLogin(){
+    var loginState = false;
+    function apiLogin(un, up){
         $.post(root+'/auth/login?' + $.now(),
             {
-                j_username: "admin",
-                j_password: "admin"
+                j_username: un,
+                j_password: up
             },
             function(data, status){
                 token = data;
-            });
+		myApp.isLogin = true;
+		
+                var app = new App();
+                app.run();
+
+            }).fail( function() {
+	        login();
+        });
     };
+    function apiLogout(){
+        $.post(root+'/auth/logout?' ,
+            "",
+            function(data, status){
+                alert("logging out" + myApp.username);
+		app = {};
+            }).fail( function() {
+	        alert("Failed to logging out " + myApp.username);
+        });
+    };
+
+    function login() {
+	if( myApp.username == '' || myApp.password == '' || myApp.isLogin == false) {
+	    $( "#LoginBox" ).dialog({
+	        resizable: true,
+	        width:300,
+	        height:220,
+	        buttons: {
+	            "Login": function() {
+		    myApp.username = $("#uname").val();
+		    myApp.password = $("#upass").val();
+
+		    apiLogin(myApp.username, myApp.password);
+                    $(this).dialog( "close" );
+	            }
+	        }
+	    });
+	} else {
+	    apiLogin(myApp.username, myApp.password);
+	}
+    };
+
+
+
     function apiPost(path, input, callback){
         /*$.post(root + '/api' + path, input,
             function(data, status){
@@ -42,7 +86,8 @@ window.myApp = {};
 	  url: root + '/api' + path,
 	  data: input,
 	  success: function(data, status){
-                callback.call(data);
+		if (callback != null)
+                  callback.call(data);
             },
 	  contentType: 'application/json', 
 	  processData: false,
@@ -63,6 +108,8 @@ window.myApp = {};
     myApp.apiLogin = apiLogin;
     myApp.apiPost = apiPost;
     myApp.apiGet = apiGet;
+    myApp.login = login;
+    myApp.apiLogout = apiLogout;
     }
 
 (window.myApp));
@@ -88,5 +135,13 @@ $(document).ready(function()
         }
     });
     
-    $(".defaultText").blur();        
+    $(".defaultText").blur();  
+
+    $("div#tabs").tabs();   
+/*$("div#tabs").tabs({
+  beforeActivate: function (event, ui) {
+    alert(ui.newPanel.attr('id'));
+  }
+});*/             
+      
 });

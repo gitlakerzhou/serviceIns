@@ -25,6 +25,8 @@
 	    this.computeNodeGuidId = '';
 	    this.hostAgg = 'Unaggregatted';
 	    this.hostAggId = 0;
+	    this.typeKey = 0;
+	    this.bwProfiles =  ko.observableArray([]);
             return this;
         }
     };
@@ -117,6 +119,7 @@
             self.siteOutBwp = ko.observable("");
             self.siteOutValue = ko.observable("");
             self.siteVlan = ko.observable("");
+	    self.siteBwProfiles = ko.observableArray([]);
 	    self.peerDevName = "";
 	    self.peerDevPortKey = 0;
 	    self.peerDevPortName = "";
@@ -126,6 +129,7 @@
 	    self.coreEntryVlan = 0;
 	    self.coreExitVlan = 0;
 	    self.info = self.calculate;
+	    self.infoExtra = '';
 	    self.connToType = "NoPeer";
 	    self.explicitCidr = false;
 	    self.connectExtRouter = false;
@@ -172,24 +176,26 @@
 
             self.calculate = function() {
 		var s = '';
-		console.log(self.ownerType + "/" + self.connToType);
 		if (self.ownerType == "PhyConn") {
 		    //physical port
 		    switch (self.connToType) {
 		    case 'NoPeer':
-			s += "Not connected"
+			s += "Not connected";
+			self.infoExtra = '';
 		    break;
 		    case 'PhyConn': // connect to a port on another physical device
 			s += "Connected to " + self.peerDevPortName + " on " + self.peerDevName;
 		    break;
 		    case 'Site':
-			s += self.siteName() + "\n" + " IN: " + self.siteInOp() + '/' + self.siteInTag() + '/' + self.InBwp +"\n";
+			s += 'Site Name: ' + self.siteName();
+			self.infoExtra = ''+'Ingress:' + self.siteInOp() + ' / ' + 'Egress:' + self.siteOutOp();
 		    break;
 		    case 'CloudConn':
 			s += "Connected to "+self.cloudName;
 		    break;
 		    case 'CoreProviderP':
-			s += "Core Provider Entry VLAN: " + self.coreEntryVlan + "; Exit VLAN: " + self.coreExitVlan;
+			s += "Connected to Core Provider";
+			self.infoExtra = ''+'Entry VLAN: ' + self.coreEntryVlan + "/ Exit VLAN: " + self.coreExitVlan;
 		    break;
 		    case 'SrvPort':
 			s += "Connected to Service Port";

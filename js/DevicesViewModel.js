@@ -10,6 +10,7 @@
     this.availableSites = ko.observableArray([]);
     this.availablePhyPorts = ko.observableArray([]);
     this.selectedDevice = ko.observable(null);
+
     this.portsUpdate = function(port, toAdd) {
 	if (toAdd && port.isInuse() == false) {
 	    if (this.availablePorts.indexOf(port) <= -1)
@@ -31,6 +32,12 @@
 		this.availableSrvPorts.pop(port);
 	}
     }
+
+    this.logout = function() {
+	myApp.apiLogout();
+    }
+
+
 /*  This work is licensed under Creative Commons GNU LGPL License.
     License: http://creativecommons.org/licenses/LGPL/2.1/
     Version: 0.9
@@ -107,6 +114,7 @@ var json2xml = function(o, tab) {
                 self.device = device;
 		self.getCloudInfo(device);
 		self.getCentralOfficeName(device);
+		self.getBWProfiles(device);
             }
         });
 	self.drawResDashBoardPercentage = function(context, x, y, r, name, percentage) {
@@ -201,6 +209,15 @@ var json2xml = function(o, tab) {
 	self.getCloudInfo = function(device) {
 	    myApp.apiGet('/clouds/list', function(){self.updateCloudInfo(this)});
 	};
+	self.updateBWProfiles = function(bwp) {
+	    for (var bw in bwp) {
+		self.device.bwProfiles.push({'key':bwp[bw].key, 'name':bwp[bw].displayName});
+	    }
+	};
+	self.getBWProfiles = function(device) {
+	    myApp.apiGet('/customBandwidthProfiles/get/'+device.typeKey, function(){self.updateBWProfiles(this)});
+	};
+
 	self.updateCentralOfficeName = function(co) {
 	    for (var c in co) {
 		if (co[c].key == self.device.COKey) {
@@ -275,6 +292,7 @@ var json2xml = function(o, tab) {
 		d.cloudConn = devices[idx].networkCloudConnection;
 		d.cpPort = devices[idx].coreProviderPort;
 		d.centralOfficeKey = devices[idx].centralOfficeKey;
+		d.typeKey = devices[idx].physicalDeviceTypeKey;
                 console.log(d);
 		//self.device = d;
                 //selectedDevice(d);
@@ -876,6 +894,10 @@ var json2xml = function(o, tab) {
             self.state = {NOTUSED:"Available",CONNECTED:"Connected",CONFIGURED:"Configured",USED:"InService"};
 
             self.connOptions = ko.observableArray(['NoPeer','SrvPort', 'Site', 'PhyConn','CloudConn','CoreProviderP']);
+	    self.siteInOpts = ko.observableArray(["Match","Match & Pop"]);
+	    self.siteInTags = ko.observableArray(["Untagged","Tagged","Value"]);
+	    self.siteOutOpts = ko.observableArray(["Push"]);
+	    self.siteOutTags = ko.observableArray(["STag","CTag"]);
             self.type = {NOPR:"NoPeer",SRV:"SrvPort",PHY:"PhyConn",SITE:"Site",CLOUD:"CloudConn",CPP:"CoreProviderP" };
 
             // the device collection
@@ -883,6 +905,7 @@ var json2xml = function(o, tab) {
             
             self.device = null;
             self.deviceV = ko.observable(self.device);
+	    self.selectedPort = ko.observable({pname:"name", owner:{}});
             self.ports = [];
             deviceSelectionNotice.subscribe(function(newValue) {
                 self.device = newValue;
@@ -1011,11 +1034,142 @@ var json2xml = function(o, tab) {
             self.loadSites = function (dev_key, port_key) {
                 var sites = myApp.apiGet('/sites/list/'+dev_key+'/'+port_key, function(){self.siteInfoUpdate(this)});
             };
+
+	    self.siteInfoUpdateAfterDeletion = function(delSiteResp) {
+		//scan the port list and reset the site info accordingly
+		for (var p in self.ports) 
+		    if (self.ports[p].siteId == delSiteResp.affectedKey) {
+			self.PhysicalPortCollection.remove(function(pt) {return pt.key == self.ports[p].key});
+			self.ports[p].siteId = 0;
+	                self.ports[p].siteName = ko.observable("");
+	                self.ports[p].siteTenantName = ko.observable("");
+            		self.ports[p].siteInOp = ko.observable("");
+            		self.ports[p].siteInTag = ko.observable("");
+            		self.ports[p].siteInBwp = ko.observable("");
+            		self.ports[p].siteInValue = ko.observable("");
+            		self.ports[p].siteOutOp = ko.observable("");
+            		self.ports[p].siteOutTag = ko.observable("");
+            		self.ports[p].siteOutBwp = ko.observable("");
+            		self.ports[p].siteOutValue = ko.observable("");
+            		self.ports[p].siteVlan = ko.observable("");
+	    		self.ports[p].siteBwProfiles = ko.observableArray([]);
+			self.ports[p].connToType = 'NoPeer'; //TODO: fix this
+			self.ports[p].info = self.ports[p].calculate();
+                        self.PhysicalPortCollection.push(self.ports[p]);
+			portsUpdate(self.ports[p], true);
+			self.PhysicalPortCollection.sort(function(left, right) {
+			    return left.key == right.key ? 0 : (left.key < right.key ? -1 : 1)
+			});
+		}
+	    };
+
+	    self.delSite = function (port) {
+		self.selectedPort(port);
+		$( "#DelSite" ).dialog({
+	            resizable: true,
+		    width:400,
+	            height:300,
+	            buttons: {
+	                "Delete Site": function() {
+			    myApp.apiPost(
+				'/sites/remove',
+			    	{'key': self.selectedPort().siteId}, 
+				function(){self.siteInfoUpdateAfterDeletion(this);	
+			    });
+			    $(this).dialog( "close" );
+	                },
+	                Cancel: function() {
+	                    $(this).dialog( "close" );
+	                }
+	            }
+		});
+	    };
+
+	    self.createSite =  function(port) {
+		//console.log(port);
+		self.selectedPort(port);
+		$( "#NewSite" ).dialog({
+	            resizable: true,
+		    width:420,
+	            height:580,
+	            buttons: {
+	                "Create Site": function() {
+			    self.buildSiteAddRequest(port);			    
+			    $(this).dialog( "close" );
+	                },
+	                Cancel: function() {
+	                    $(this).dialog( "close" );
+	                }
+	            }
+		});
+	    };
+
+	    self.buildSiteAddRequest = function(port) {
+		console.log(port);
+
+		site = {
+		    'displayName': port.siteName(),
+		    'deviceKey': ''+port.owner.id,
+		    'portKey': ''+port.key,
+		    'tenantKey': "1", //TODO: obtain the value from API
+		    'centralOfficeKey': ''+port.owner.COKey,
+		    'physicalDeviceTypeKey': null, //TODO: optinal 
+		    'networkVlanValue': '',
+		    'siteBandwidthProfileCollection': [],
+		    'vlanInfoCollection':[{
+			'deviceKey': ''+port.owner.id,
+			'deviceName': port.owner.description,
+			'portKey': ''+port.key,
+			'portName': port.pname,
+			'vlanDirection': "Ingress",
+			'vlanOperation': port.siteInOp(),
+			'vlanPortType': "CustomerPort",
+			'vlanTagType': port.siteInTag(),
+			'vlanValue': port.siteInValue()
+			},{
+			'deviceKey': ''+port.owner.id,
+			'deviceName': port.owner.description,
+			'portKey': ''+port.key,
+			'portName': port.pname,
+			'vlanDirection': "Egress",
+			'vlanOperation': port.siteOutOp(),
+			'vlanPortType': "CustomerPort",
+			'vlanTagType': port.siteOutTag(),
+			'vlanValue': port.siteOutValue()
+			}
+		]};
+		myApp.apiPost('/sites/add?'+$.now(), site, function(){self.newSiteCallback(this)});
+	    };
+
+	    self.newSiteCallback = function(newSiteResp) {
+		self.selectedPort().siteId = newSiteResp.affectedKey;
+		self.PhysicalPortCollection.remove(function(pt) {return pt.key == self.selectedPort().key});
+		self.selectedPort().connToType = self.type.SITE;
+		self.selectedPort().info = self.selectedPort().calculate();
+		portsUpdate(self.selectedPort(), true);
+		self.PhysicalPortCollection.push(self.selectedPort());
+		self.PhysicalPortCollection.sort(function(left, right) {
+		    return left.key == right.key ? 0 : (left.key < right.key ? -1 : 1)
+		});
+
+		//add selected Bandwidth profiles
+		for (b in self.selectedPort().siteBwProfiles()) {
+		    myApp.apiPost('/customBandwidthProfilesSite/add', 
+			{
+			    'displayName': self.selectedPort().siteBwProfiles()[b].name,
+			    'key': ''+self.selectedPort().siteBwProfiles()[b].key,
+			    'siteKey': self.selectedPort().siteId,
+			    'siteName': self.selectedPort().siteName()
+			}, null);
+		}
+	    };
+
             return this;
         };
 
     function masterVM(){
         var self = this;
+	self.userName = myApp.username;
         self.ServicesViewModel = new ServicesViewModel();
         self.DevicesViewModel  = new DevicesViewModel();
         self.ServicePortsViewModel    = new ServicePortsViewModel();
@@ -1024,13 +1178,16 @@ var json2xml = function(o, tab) {
         self.DevicesViewModel.loadDevices();
         //self.PortsViewModel.loadServicePorts();
         ko.applyBindings(self.DevicesViewModel, document.getElementById("deviceListView"));
-        ko.applyBindings(self.DevicesViewModel, document.getElementById("deviceView"));
+        //ko.applyBindings(self.DevicesViewModel, document.getElementById("deviceView"));
         ko.applyBindings(self.ServicesViewModel, document.getElementById("ServiceSelectionView"));
         ko.applyBindings(self.ServicePortsViewModel, document.getElementById("PortView"));
 	ko.applyBindings(self.ServicePortsViewModel, document.getElementById("NewLink"));
 	ko.applyBindings(self.ServicePortsViewModel, document.getElementById("DelLink"));
 	ko.applyBindings(self.PhysicalPortsViewModel, document.getElementById("PhysicalPortView"));
+	ko.applyBindings(self.PhysicalPortsViewModel, document.getElementById("NewSite"));
+	ko.applyBindings(self.PhysicalPortsViewModel, document.getElementById("DelSite"));
 	ko.applyBindings(self.ServicesViewModel, document.getElementById("ServiceOrder"));
+	ko.applyBindings(self, document.getElementById("headerUserArea"));
         return this;
     };
     myApp.MasterVM = masterVM;
